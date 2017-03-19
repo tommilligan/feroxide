@@ -1,7 +1,7 @@
-use atom::*;
-use namings::*;
-use trait_element::*;
-use trait_properties::*;
+use atom::{ Atom };
+use namings::{ number_to_greek, subscript };
+use trait_element::{ Element };
+use trait_properties::{ Properties };
 use types::*;
 
 
@@ -50,8 +50,9 @@ impl Molecule {
 
         // If some tokens remain, convert it into a compound
         if token.len() > 0 {
-            let compound = MoleculeCompound::from_string(token).unwrap();
-            compounds.push(compound);
+            if let Some(compound) = MoleculeCompound::from_string(token) {
+                compounds.push(compound);
+            }
         }
 
 

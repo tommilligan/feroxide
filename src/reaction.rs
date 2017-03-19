@@ -1,8 +1,8 @@
-use ion::*;
-use molecule::*;
-use trait_element::*;
-use trait_properties::*;
-use trait_reaction::*;
+use ion::{ Ion };
+use molecule::{ Molecule };
+use trait_element::{ Element };
+use trait_properties::{ Properties };
+use trait_reaction::{ Reaction };
 use types::*;
 
 use std::collections::HashMap;
@@ -180,6 +180,11 @@ impl<E: Element> ReactionSide<E> {
 
 
                     let atom_number = molecule_compound.atom.number;
+
+                    if atom_number == 0 {
+                        // Ignore electrons in the atom count
+                        continue;
+                    }
 
                     let mut amount;
                     if let Some(&old_amount) = atoms.get(&atom_number) {
