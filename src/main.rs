@@ -30,15 +30,8 @@ fn main() {
     // To get your data
     println!("10 moles of {} weigh {} gram(s).", symbol, weight);
 
-
-    // Make some more molecules, just for fun
-    let carbonic_acid = Molecule {
-        compounds: vec! {
-            MoleculeCompound { atom: HYDROGEN, amount: 2 },
-            MoleculeCompound { atom: CARBON, amount: 1 },
-            MoleculeCompound { atom: OXYGEN, amount: 3 }
-        }
-    };
+    // If you don't want to type a lot, you could also use strings
+    let carbonic_acid = Molecule::from_string("H2CO3".to_owned()).unwrap();
 
     // Throw a bunch of molecules together in a container with a bit of energy
     let mut container = Container {
@@ -58,7 +51,7 @@ fn main() {
     };
 
     // Specify the reaction that will occur
-    // H₂O + CO₂ → H₂CO₃
+    // H₂O + CO₂ ⇌ H₂CO₃
     let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
@@ -75,6 +68,7 @@ fn main() {
 
         is_equilibrium: true
     };
+
 
     // Make sure the reaction is valid
     assert!(reaction.equalise());
@@ -101,94 +95,10 @@ fn main() {
     }
 
 
-
-    // Redox is possible, but it's quite a hassle to type
+    // Redox is possible, but to save you from a lot of typing, I recommend using strings here
     let redox = RedoxReaction {
-        oxidator: ElemReaction {
-            lhs: ReactionSide { compounds: vec! {
-                ReactionCompound {
-                    element: Ion {
-                        molecule: Molecule { compounds: vec! {
-                            MoleculeCompound {
-                                atom: FLUORINE,
-                                amount: 2
-                            }
-                        }},
-
-                        charge: Some(0)
-                    },
-
-                    amount: 1
-                },
-
-                ReactionCompound {
-                    element: ELECTRON.clone(),
-                    amount: 2
-                }
-            }},
-
-            rhs: ReactionSide { compounds: vec! {
-                ReactionCompound {
-                    element: Ion {
-                        molecule: Molecule { compounds: vec! {
-                            MoleculeCompound {
-                                atom: FLUORINE,
-                                amount: 1
-                            }
-                        }},
-
-                        charge: Some(-1)
-                    },
-
-                    amount: 2
-                }
-            }},
-
-            is_equilibrium: true
-        },
-
-        reductor: ElemReaction {
-            lhs: ReactionSide { compounds: vec! {
-                ReactionCompound {
-                    element: Ion {
-                        molecule: Molecule { compounds: vec! {
-                            MoleculeCompound {
-                                atom: IRON,
-                                amount: 1
-                            }
-                        }},
-
-                        charge: Some(0)
-                    },
-
-                    amount: 1
-                }
-            }},
-
-            rhs: ReactionSide { compounds: vec! {
-                ReactionCompound {
-                    element: Ion {
-                        molecule: Molecule { compounds: vec! {
-                            MoleculeCompound {
-                                atom: IRON,
-                                amount: 1
-                            }
-                        }},
-
-                        charge: Some(3)
-                    },
-
-                    amount: 1
-                },
-
-                ReactionCompound {
-                    element: ELECTRON.clone(),
-                    amount: 3
-                }
-            }},
-
-            is_equilibrium: true
-        }
+        oxidator: ElemReaction::<Ion>::from_string("F2 + 2e <> 2F;1-".to_owned()).unwrap(),
+        reductor: ElemReaction::<Ion>::from_string("Fe <> Fe;3 + 3e".to_owned()).unwrap()
     };
 
 

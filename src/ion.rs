@@ -1,4 +1,5 @@
 use atom::*;
+use electron::*;
 use namings::*;
 use molecule::*;
 use trait_element::*;
@@ -7,8 +8,13 @@ use types::*;
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
+/// An Ion
 pub struct Ion {
+    /// The molecule of this ion
     pub molecule: Molecule,
+
+
+    /// The charge of this ion
     pub charge: Option<IonCharge>
 }
 
@@ -32,11 +38,77 @@ pub fn charge_of_atom(atom: Atom) -> Option<IonCharge> {
 
 
 impl Ion {
+    /// Convert a string representation of an Ion into one
+    pub fn from_string(symbol: String) -> Option<Ion> {
+        let mut molecule = None;
+        let mut charge: IonCharge = 0;
+        let mut is_negative = false;
+
+        let mut token = String::new();
+        let mut set_charge = false;
+
+        for c in symbol.chars() {
+            if c == ';' {
+                // Electron
+                if token == "e" {
+                    return Some(ELECTRON.clone());
+                }
+
+                molecule = Molecule::from_string(token);
+                token = String::new();
+                set_charge = true;
+                continue;
+            }
+
+            if set_charge {
+                if c == '-' {
+                    is_negative = true;
+                    continue;
+                }
+
+                charge *= 10;
+                charge += to_number!(c) as i8;
+                continue;
+            }
+
+            token.push(c);
+        }
+
+        // It's just a molecule
+        if token.len() > 0 && ! set_charge {
+            // Electron
+            if token == "e" {
+                return Some(ELECTRON.clone());
+            }
+
+            molecule = Molecule::from_string(token);
+        }
+
+        if is_negative {
+            // assume - to mean -1
+            if charge == 0 {
+                charge = -1;
+            } else {
+                charge *= -1;
+            }
+        }
+
+        if let Some(molecule) = molecule {
+            Some(Ion {
+                molecule: molecule,
+                charge: Some(charge)
+            })
+        } else {
+            None
+        }
+    }
+
+
     /// Convert a Molecule into an Ion
     pub fn from_molecule(molecule: Molecule) -> Ion {
         Ion {
             molecule: molecule,
-            charge: None // Will be calculated
+            charge: None // Will be calculated later
         }
     }
 
