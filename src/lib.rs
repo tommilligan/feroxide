@@ -121,8 +121,8 @@ fn reaction_from_string() {
         is_equilibrium: true,
     };
 
-    let reaction_from_string =
-        ElemReaction::<Ion>::ion_from_string("2H2 + O2 <> 2H2O".to_owned()).unwrap();
+    let reaction_from_string = ElemReaction::<Ion>::ion_from_string("2H2 + O2 <> 2H2O".to_owned())
+        .unwrap();
 
     assert_eq!(reaction, reaction_from_string);
 
@@ -297,9 +297,7 @@ fn check_display() {
         element: SUGAR.clone(),
     };
 
-    let reactionside = ReactionSide {
-        compounds: vec![reactioncompound.clone()],
-    };
+    let reactionside = ReactionSide { compounds: vec![reactioncompound.clone()] };
 
     let reaction = ElemReaction {
         lhs: reactionside.clone(),
