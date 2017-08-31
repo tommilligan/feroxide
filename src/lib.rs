@@ -381,18 +381,18 @@ fn container_reaction_cost() {
 
 
     assert_eq!(Energy::from(1000.0), container.available_energy);
-    assert_eq!(Energy::from(100.0), reaction.energy_cost());
+    assert_eq!(Energy::from(-100.0), reaction.energy_cost());
 
     // Repeadably try this reaction
 
     assert!(container.react(&reaction));
-    assert_eq!(Energy::from(900.0), container.available_energy);
+    assert_eq!(Energy::from(1100.0), container.available_energy);
 
     assert!(container.react(&reaction));
-    assert_eq!(Energy::from(800.0), container.available_energy);
+    assert_eq!(Energy::from(1200.0), container.available_energy);
 
     assert!(container.react(&reaction));
-    assert_eq!(Energy::from(700.0), container.available_energy);
+    assert_eq!(Energy::from(1300.0), container.available_energy);
 }
 
 #[test]
