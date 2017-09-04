@@ -1,4 +1,5 @@
 use ion::Ion;
+use math::*;
 use molecule::Molecule;
 use trait_element::Element;
 use trait_properties::Properties;
@@ -363,11 +364,7 @@ impl<E: Element> ReactionCompound<E> {
 
 
 impl<E: Element> Reaction<E> for ElemReaction<E> {
-    /// NOTE: This function is still a WIP!
     fn equalise(&self) -> bool {
-        println!("####    The equalise function is not yet ready.");
-
-
         let total_left = self.lhs.total_atoms();
         let total_right = self.rhs.total_atoms();
 
@@ -377,8 +374,10 @@ impl<E: Element> Reaction<E> for ElemReaction<E> {
             return true;
         }
 
-        for (atom_number, l_amount) in total_left {
-            let r_amount: u16;
+        // If not, equalise
+        for (atom_number, ref_l_amount) in &total_left {
+            let l_amount = ref_l_amount.clone();
+            let r_amount;
 
             match total_right.get(&atom_number) {
                 Some(&x) => r_amount = x,
@@ -386,31 +385,44 @@ impl<E: Element> Reaction<E> for ElemReaction<E> {
             }
 
             if r_amount == 0 {
-                println!("It's impossible to make this reaction work: {}", self);
+                println!("Nuclear fusion and fission are not implemented;");
+                println!("Right side doesn't have the same molecules as the left side: {}", self);
                 return false;
             }
 
+
             if l_amount != r_amount {
-                let difference = {
-                    if l_amount > r_amount {
-                        l_amount - r_amount
-                    } else {
-                        r_amount - l_amount
-                    }
-                };
+                let difference: i32 = i32::from(r_amount) - i32::from(l_amount);
 
                 if difference > 0 {
-                    // Increase right side
-                    println!("We know what to do, but it's just not implemented yet.");
+                    // TODO: Increase right side
+                    // self.rhs.contents.find(|molecule: Molecule| -> molecule.contains_atom_number(atom_number));
                 } else {
-                    // Increase left side
-                    println!("We know what to do, but it's just not implemented yet.");
+                    // TODO: Increase left side
+
                 }
             }
         }
 
-        // NOTE: true only for debugging
-        true
+        let mut divisor = None;
+
+        for elem in &self.lhs.compounds {
+            match divisor {
+                Some(x) => divisor = Some(gcd(x, elem.amount)),
+                None => divisor = Some(elem.amount),
+            }
+        }
+
+        if let Some(x) = divisor {
+            if x > 1 {
+                // TODO: divide all by x
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        false
     }
 
 
@@ -462,9 +474,9 @@ impl<E: Element> Mul<u16> for ReactionSide<E> {
 
 
 impl<E: Element> PartialEq for ReactionCompound<E> {
-    /// Two ReactionCompound's are equal if their elements are equal
+    /// Two ReactionCompound's are equal if their elements and amounts are equal
     fn eq(&self, rhs: &ReactionCompound<E>) -> bool {
-        self.element == rhs.element
+        self.element == rhs.element && self.amount == rhs.amount
     }
 }
 

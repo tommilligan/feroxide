@@ -68,6 +68,57 @@ pub mod display_impls;
 
 // tests \\
 #[test]
+#[should_panic]
+fn equalise_reactions() {
+    println!("Hello world");
+
+    fn molecule_reaction_from_string(string: &str) -> ElemReaction<Molecule> {
+        ElemReaction::<Molecule>::molecule_from_string(string.to_owned()).unwrap()
+    }
+
+    fn assert_equalise_ok(incorrect: &str, correct: &str) {
+        let incorrect_reaction = molecule_reaction_from_string(incorrect);
+        let correct_reaction = molecule_reaction_from_string(correct);
+
+        println!("{} ~ {}", incorrect_reaction, correct_reaction);
+
+        assert!(incorrect_reaction.equalise(), "Failed to equalise {}", incorrect_reaction.stringify());
+
+        println!("{} ~ {}", incorrect_reaction, correct_reaction);
+
+        assert_eq!(incorrect_reaction, correct_reaction, "{} isn't {}", incorrect_reaction.stringify(), correct_reaction.stringify());
+    }
+
+
+    // assert_equalise_ok("", "");
+    assert_equalise_ok("C18H36O2 > C + H2 + O2", "C18H36O2 > 18C + 18H2 + O2");
+    assert_equalise_ok("H2 + O2 > H2O", "2H2 + O2 > 2H2O");
+    assert_equalise_ok("S + O2 > SO3", "2S + 3O2 > 2SO3");
+
+    assert_equalise_ok("NH3 + NO2 > N2 + H2O", "8NH3 + 6NO2 > 7N2 + 12H2O");
+
+    assert_equalise_ok("HNO3 + Fe > FeN3O9 + H2", "6HNO3 + 2Fe > 2FeN3O9 + 3H2");
+    assert_equalise_ok("C3H6 + O2 > CO2 + H2O", "2C3H6 + 9O2 > 6CO2 + 6H2O");
+    assert_equalise_ok("C3H6O + O2 > CO2 + H2O", "C3H6O + 4O2 > 3CO2 + 3H2O");
+    assert_equalise_ok("Ca + H2O > CaO2H2 + H2", "Ca + 2H2O > CaO2H2 + H2");
+    assert_equalise_ok("C6H12O6 > C2H5OCOOH", "C6H12O6 > 2C2H5OCOOH");
+    assert_equalise_ok("C2H5OCOOH + O2 > CO2 + H2O", "C2H5OCOOH + 3O2 > 3CO2 + 3H2O");
+}
+
+
+#[test]
+fn calculate_differences() {
+    assert_eq!(diff(0, 0), 0); // 0 = 0
+    assert_eq!(diff(1, 3), 2); // + < +
+    assert_eq!(diff(5, 2), 3); // + > +
+    assert_eq!(diff(-6, -4), 2); // - < -
+    assert_eq!(diff(-7, -10), 3); // - > -
+    assert_eq!(diff(-8, 12), 20); // - < +
+    assert_eq!(diff(13, -1), 14); // + > -
+}
+
+
+#[test]
 fn display_types_equals_value() {
     assert_eq!(format!("{}", AtomNumber::from(1)), "1");
     assert_eq!(format!("{}", AtomNumber::from(2)), "2");
@@ -643,44 +694,7 @@ fn reaction_check() {
 
 
 #[test]
-fn equalise() {
-    use data_atoms::*;
-    use data_molecules::*;
-
-
-    let water_reaction = ElemReaction {
-        lhs: ReactionSide {
-            compounds: vec![
-                ReactionCompound {
-                    element: molecule_from_atom!(HYDROGEN),
-                    amount: 0,
-                },
-                ReactionCompound {
-                    element: molecule_from_atom!(OXYGEN),
-                    amount: 0,
-                },
-            ],
-        },
-
-        rhs: ReactionSide {
-            compounds: vec![
-                ReactionCompound {
-                    element: WATER.clone(),
-                    amount: 0,
-                },
-            ],
-        },
-
-        is_equilibrium: false,
-    };
-
-
-    assert!(water_reaction.equalise());
-}
-
-
-#[test]
-fn only_compare_similiar_elements() {
+fn elemreaction_accepts_molecules_and_ions() {
     use data_molecules::*;
     use data_ions::*;
 

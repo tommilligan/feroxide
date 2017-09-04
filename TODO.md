@@ -5,6 +5,7 @@
   * Add hydration (ex. CuSO4.5H2O) to molecules
   * Optimise common data(?)
   * Add electrovalence data to atoms
+  * Convert atoms to enum
 
 * `atoms.rs`
   * Names for special cases (-oxide etc.)
