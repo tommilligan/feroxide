@@ -61,6 +61,19 @@ impl Molecule {
             None
         }
     }
+
+
+    pub fn from_trivial(string: String) -> Option<Molecule> {
+        use data_trivials::*;
+
+        for &(upcase_trivial_name, molecule) in ALL_TRIVIALS.iter() {
+            if upcase_trivial_name.to_lowercase() == string.to_lowercase() {
+                return Some(molecule.clone());
+            }
+        }
+
+        None
+    }
 }
 
 

@@ -60,6 +60,7 @@ pub mod data_atoms;
 pub mod data_ions;
 pub mod data_molecules;
 pub mod data_sep;
+pub mod data_trivials;
 
 pub mod display_impls;
 
@@ -67,6 +68,37 @@ pub mod display_impls;
 
 
 // tests \\
+#[test]
+fn trivial_names() {
+    use data_atoms::*;
+
+    macro_rules! molecule_string_from_trivial {
+        ($string: expr) => (
+            Molecule::from_trivial($string.to_owned()).or(Some(molecule_from_atom!(HYDROGEN))).unwrap().symbol()
+        )
+    }
+
+    assert_eq!(molecule_string_from_trivial!("water"), "H₂O");
+    assert_eq!(molecule_string_from_trivial!("ammonia"), "NH₃");
+    assert_eq!(molecule_string_from_trivial!("pyrite"), "FeS₂");
+}
+
+
+#[test]
+fn molecule_namings() {
+    macro_rules! molecule_name_from_string {
+        ($string: expr) => (
+            Molecule::from_string($string.to_owned()).unwrap().name()
+        )
+    }
+
+    assert_eq!(molecule_name_from_string!("NH3"), "nitrogentrihydride");  // ammonia
+    assert_eq!(molecule_name_from_string!("H2O"), "dihydrogenmonoxide"); // water, DHMO
+    assert_eq!(molecule_name_from_string!("PbO"), "leadoxide");
+    assert_eq!(molecule_name_from_string!("PCl5"), "phosphoruspentachloride");
+}
+
+
 #[test]
 fn display_types_equals_value() {
     assert_eq!(format!("{}", AtomNumber::from(1)), "1");
