@@ -1,3 +1,6 @@
+// Ignore clippy warnings about data like 12.01100
+#![allow(excessive_precision)]
+
 // macros \\
 
 #[macro_use]

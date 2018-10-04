@@ -1,6 +1,4 @@
-#[macro_use(ion_from_molecule)]
 extern crate feroxide;
-
 
 use feroxide::*;
 use feroxide::data_atoms::*;
