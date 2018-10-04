@@ -35,7 +35,7 @@ impl Molecule {
 
         for c in string.chars() {
             // Ignore whitespace
-            if is_whitespace!(c) {
+            if is_whitespace!(c) || is_separator!(c) {
                 continue;
             }
 

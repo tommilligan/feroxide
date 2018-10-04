@@ -39,6 +39,14 @@ macro_rules! is_whitespace {
 
 
 #[macro_export]
+macro_rules! is_separator {
+    ($c: expr) => {
+        $c == '.' || $c == '•'
+    }
+}
+
+
+#[macro_export]
 macro_rules! is_vowel {
     ($c: expr) => {
         $c == 'a' || $c == 'e' || $c == 'i' || $c == 'o' || $c == 'u'

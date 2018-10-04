@@ -170,6 +170,7 @@ fn molecule_from_string() {
     assert_eq!(WATER.clone(), molecule_from_string!("H2O"));
     assert_eq!(CO2.clone(), molecule_from_string!("CO2"));
     assert_eq!(SUGAR.clone(), molecule_from_string!("C12H22O11"));
+    assert_eq!(COPPER_SULFATE_HYDRATED.clone(), molecule_from_string!("CuSO4.5H2O"));
 }
 
 
