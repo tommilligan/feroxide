@@ -1,6 +1,5 @@
 use molecule::Molecule;
 
-
 lazy_static! {
     pub static ref WATER: Molecule = Molecule::from_string("H2O").unwrap();
     pub static ref CO2: Molecule = Molecule::from_string("CO2").unwrap();
